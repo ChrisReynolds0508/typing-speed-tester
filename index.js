@@ -53,40 +53,40 @@ const getNextSentence = () =>{
     return shuffledSentences[currentIndex++]; 
 }
 
-let timerStarted = false;
+let timerStarted = false; 
 let startTime;
 let interval;
 
 let currentSentence = '';
 
-const startTest = () => {
-    currentSentence = getNextSentence(); 
-    sampleSentence.textContent = currentSentence; 
-    textArea.value = '';
-    timer.textContent = 'Time: 0.00s';
-    wpmDisplay.textContent = '';
-    accuracy.textContent = '';
-    timerStarted = false; 
-    clearInterval(interval); 
+const startTest = () => { 
+    currentSentence = getNextSentence(); //this will make sure the current sentence is always new until the entire array of sentences has been used 
+    sampleSentence.textContent = currentSentence; // appends the current sentence to the sampleSentence div 
+    textArea.value = ''; //makes sure the text area is blank 
+    timer.textContent = 'Time: 0.00s';//sets the default time to 0.00s
+    wpmDisplay.textContent = ''; //set the words per minute div to an empty string which will be invisible to the user 
+    accuracy.textContent = ''; //set the accuracy div to an empty string which will be invisible to the user 
+    timerStarted = false; //makes sure the timer has not started until the user starts typing 
+    clearInterval(interval);//stops the timer 
 };
 
-textArea.addEventListener('input', () => {
-    if(!timerStarted){
-        timerStarted = true; 
-        startTime = Date.now();
+textArea.addEventListener('input', () => { 
+    if(!timerStarted){ //has the timer started? 
+        timerStarted = true; //start it 
+        startTime = Date.now(); //stores the current time in milliseconds 
 
-        interval = setInterval(() => {
-            const elapsed = (Date.now() - startTime) / 1000;
-            timer.textContent = `Time: ${elapsed.toFixed(2)}s`;
+        interval = setInterval(() => {//set interval runs the function inside again and again every 50 milliseconds 
+            const elapsed = (Date.now() - startTime) / 1000; // gets the elapsed time from the start time minus finish time
+            timer.textContent = `Time: ${elapsed.toFixed(2)}s`; //appends the time message to the timer div to two decimal points 
         }, 50);
     }
-    if(textArea.value.trim() === currentSentence && timerStarted){
-        clearInterval(interval);
-        timerStarted = false;
-        const endTime = Date.now();
-        const timeTaken = (endTime - startTime) / 1000;
+    if(textArea.value.trim() === currentSentence && timerStarted){ //if the text area's value with whitespace removed is equal to currentSentence and the timer is running
+        clearInterval(interval); //stop the setInterval function 
+        timerStarted = false; // turn timer off 
+        const endTime = Date.now(); // record the time in milliseconds 
+        const timeTaken = (endTime - startTime) / 1000; 
 
-        const wordCount = currentSentence.split(' ').length;
+        const wordCount = currentSentence.split(' ').length; 
         const wpm = (wordCount/timeTaken) * 60;
         wpmDisplay.textContent = `WPM: ${wpm.toFixed(2)}`;
 
