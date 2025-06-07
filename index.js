@@ -34,7 +34,7 @@ let currentIndex = 0; //initialises count to start at 0
 
 const shuffleArray = array => {
     const shuffled = [...array];//makes a copy of the array so it doesnt affect the original array of sentences
-    for(let i=shuffled.length - 1; i > 0; i--){// loops backwards through the array stopping at index[1] because index[0] is already 'shuffled'
+    for(let i=shuffled.length - 1; i > 0; i--){// Loops backward through the array to swap each element with a random earlier element (including itself). Stops at i = 1 because when i = 0, there's no need to swap anymore.
         const j = Math.floor(Math.random() * (i+1)); //generates a random number between 0-1 and multiplys it by index + 1 and rounds it down to the nearest integer
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
@@ -70,7 +70,7 @@ const startTest = () => {
     clearInterval(interval);//stops the timer 
 };
 
-textArea.addEventListener('input', () => { 
+textArea.addEventListener('keydown', (e) => { 
     if(!timerStarted){ //has the timer started? 
         timerStarted = true; //start it 
         startTime = Date.now(); //stores the current time in milliseconds 
@@ -80,29 +80,34 @@ textArea.addEventListener('input', () => {
             timer.textContent = `Time: ${elapsed.toFixed(2)}s`; //appends the time message to the timer div to two decimal points 
         }, 50);
     }
-    if(textArea.value.trim() === currentSentence && timerStarted){ //if the text area's value with whitespace removed is equal to currentSentence and the timer is running
+    if(e.key === 'Enter' && textArea.value.trim() === currentSentence.trim()){ //if Check if user input (ignoring leading/trailing spaces) exactly matches the target sentence and the timer has started 
+        e.preventDefault();
+
         clearInterval(interval); //stop the setInterval function 
         timerStarted = false; // turn timer off 
         const endTime = Date.now(); // record the time in milliseconds 
-        const timeTaken = (endTime - startTime) / 1000; 
+        const timeTaken = (endTime - startTime) / 1000; //stores the difference between the start/end time in seconds 
 
-        const wordCount = currentSentence.split(' ').length; 
-        const wpm = (wordCount/timeTaken) * 60;
-        wpmDisplay.textContent = `WPM: ${wpm.toFixed(2)}`;
+        const wordCount = currentSentence.split(' ').length; //splits the sentence by spaces into an array of words 
+        const wpm = (wordCount/timeTaken) * 60; 
+        wpmDisplay.textContent = `WPM: ${wpm.toFixed(2)}`;//displays words per minute to two decimal places 
 
-        const typed = textArea.value;
-        let correctChars = 0;
-        for(let i = 0; i < typed.length; i++){
-            if(typed[i] === currentSentence[i]){
-                correctChars++;
+        const typed = textArea.value;//stores the value of the text area in a variable
+        let correctChars = 0;//sets the count to 0 
+        for(let i = 0; i < typed.length; i++){//loops through each element in the string 
+            if(typed[i] === currentSentence[i]){//checks if the the typed character is the same as the current sentence 
+                correctChars++; //if the characters are the same, move onto the next character 
             }
         }
-        const accuracyPercent = (correctChars / currentSentence.length) * 100;
+        const accuracyPercent = (correctChars / currentSentence.length) * 100;//
         accuracy.textContent = `Accuracy: ${accuracyPercent.toFixed(2)}%`;
+       setTimeout(() =>{
+            startTest();
+       },1000) 
     }
 })
 
-resetBtn.addEventListener('click', startTest);
+resetBtn.addEventListener('click', startTest); //when button is clicked, start test function is called 
 
-shuffledSentences = shuffleArray(sentences);
-startTest(); 
+shuffledSentences = shuffleArray(sentences); //shuffles the sentences array 
+startTest(); //calls startTest function to initialise the first test once the webpage loads 
