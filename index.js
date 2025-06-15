@@ -5,6 +5,11 @@ const container = document.createElement('div'); // holds the app layout
 container.classList.add('container');
 document.body.appendChild(container);
 
+const heading = document.createElement('h1');
+heading.classList.add('heading');
+heading.textContent = 'Typing Speed Test';
+container.appendChild(heading);
+
 const sampleSentence = document.createElement('div'); // section to display the sample sentence
 sampleSentence.classList.add('sampleSentence');
 container.appendChild(sampleSentence);
